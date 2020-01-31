@@ -372,6 +372,7 @@ pod2usage({ -verbose => 2, -exitval => 1}) if $manual;
 
 This is a script to manage filesystem-wide symbolic links to your dotfiles (configuration), based on definitions in the map file.
 The location of the map file is set in the script itself, using the $MAPFILE variable.
+The default name of the mapfile is "dot.map", and it is located in the root of your dotfiles folder.
 The location of your dotfiles is set either using the $DOTFILES environment variable, or inside the script itself.
 
 =head1 ARGUMENTS

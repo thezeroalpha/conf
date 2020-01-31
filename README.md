@@ -3,9 +3,10 @@
 1. Download the `conf` script, make it executable, and put it in your `$PATH`.
 2. Set value of `$DOTFILES` to the location of your dotfiles, either in the environment, or in the `conf` script itself.
 3. Set up your dotfiles hierarchy in any way you want.
-3. Put a map file in the root of $DOTFILES. This file defines how your dotfiles/folders map to other locations in your filesystem.
-4. Write the name of your map file in the `conf` script.
-5. Use `conf`, and profit, maybe. Run `conf -h` or `conf -man` to get help.
+3. Put a map file in the root of $DOTFILES.
+   This file defines how your dotfiles/folders map to other locations in your filesystem.
+   By default, the file is named "dot.map", but this can be changed by manually editing the script.
+4. Use `conf`, and profit, maybe. Run `conf -h` or `conf -man` to get help.
 
 ## FAQ
 ### How do you write a map file?
