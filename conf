@@ -57,19 +57,19 @@ sub confirm {
 }
 
 # Print a message to stderr and exit
-sub Die {
+sub exit_die {
   print STDERR $_[0]."\n";
   exit 1;
 }
 
 # Does a line contain a mapping?
-sub IsMapLine {
+sub is_map_line {
   # It's a mapping if it's not blank or a comment
   return ($_[0] !~ /^\s*$/ and $_[0] !~ /^\s*\#/ and $_[0] !~ /^$/)
 }
 
 # Parse a single map line into a standalone key-value mapping
-sub ParseLine {
+sub parse_line {
   # Split the line on colons
   my @mapline = split(':', $_[0]);
 
@@ -87,18 +87,18 @@ sub ParseLine {
 }
 
 # Parse the whole mapfile, return a reference to the key-value hash
-sub ParseMapfile {
+sub parse_mapfile {
   my (@nestdir, %mappings);
   my $lineno = 1;
 
   # Open up the mapfile for reading, using the handle MAP
-  open(MAP, "<$_[0]") or Die("Couldn't open the file $_[0], $!");
+  open(MAP, "<$_[0]") or exit_die("Couldn't open the file $_[0], $!");
 
   # While not EOF
   while(my $line = <MAP>) {
-    if (IsMapLine($line)) {
+    if (is_map_line($line)) {
       # Parse the mapline
-      my ($src, $dst) = @{ParseLine($line)};
+      my ($src, $dst) = @{parse_line($line)};
 
       # If top level mapping
       if ($src !~ /^-+/) {
@@ -114,7 +114,7 @@ sub ParseMapfile {
         else {
           # If the source doesn't exist, can't map
           if (not -e $src) {
-            Die("error in mapfile: $src does not exist (line $lineno)");
+            exit_die("error in mapfile: $src does not exist (line $lineno)");
           }
           # If it does, add it as a mapping
           else {
@@ -145,7 +145,7 @@ sub ParseMapfile {
           my $fullsrc = join("/", @nestdir)."/$src";
           # If it doesn't exist, can't map
           if (not -e $fullsrc) {
-            Die("error in mapfile: $fullsrc does not exist (line $lineno)");
+            exit_die("error in mapfile: $fullsrc does not exist (line $lineno)");
           }
           # Otherwise, add the mapping
           else {
@@ -163,14 +163,14 @@ sub ParseMapfile {
 }
 
 # Dump a hash, for debugging purposes
-sub PrettyPrint {
+sub pretty_print {
   puts "hash length: ".keys(%{$_[0]});
   use Data::Dumper;
   print Dumper $_[0];
 }
 
 # Link to a source path at a destination path
-sub MakeLinkOp {
+sub make_link_op {
   my ($src, $dst) = @_;
 
   # If the destination exists
@@ -199,7 +199,7 @@ sub MakeLinkOp {
 }
 
 # Remove a linked source path
-sub RmLinkOp {
+sub rm_link_op {
   my ($src, $dst) = @_;
 
   # If the destination doesn't exist, nothing to do here.
@@ -222,7 +222,7 @@ sub RmLinkOp {
 }
 
 # Check whether a link points to the config file
-sub CheckLinkOp {
+sub check_link_op {
   my ($src, $dst) = @_;
   if (-e $dst) {
     if (-l $_[1] and realpath($_[1]) eq $DOTFILES."/".$_[0]) {
@@ -241,7 +241,7 @@ sub CheckLinkOp {
 }
 
 # Execute a link operation on maps in ARGV
-sub ExecLinkOp {
+sub exec_link_op {
   # Retrieve the reference to map hash and the function to run
   my ($maps, $opref) = @_;
 
@@ -269,34 +269,34 @@ sub ExecLinkOp {
       }
       # if nothing matches, fail
       else {
-        my %opnametab = (\&MakeLinkOp => 'link', \&RmLinkOp => 'unlink', \&CheckLinkOp => 'check');
-        Die "Error: $src_part not present in mapfile, don't know how to ".$opnametab{$opref}.'.';
+        my %opnametab = (\&make_link_op => 'link', \&rm_link_op => 'unlink', \&check_link_op => 'check');
+        exit_die "Error: $src_part not present in mapfile, don't know how to ".$opnametab{$opref}.'.';
       }
     }
   }
 }
 
 # Link command
-sub LinkCmd {
+sub link_cmd {
   # If no args, default to linking all but confirm with user
   if (not @ARGV and !confirm("Link all?")) {
-      Die "User cancelled.";
+      exit_die "User cancelled.";
   }
 
-  ExecLinkOp($_[0], \&MakeLinkOp);
+  exec_link_op($_[0], \&make_link_op);
 }
 
 # Unlink command
-sub UnlinkCmd {
+sub unlink_cmd {
   # If no args, default to unlinking all but confirm with user
   if (not @ARGV and !confirm("Unlink all?")) {
-    Die "User cancelled";
+    exit_die "User cancelled";
   }
-  ExecLinkOp($_[0], \&RmLinkOp);
+  exec_link_op($_[0], \&rm_link_op);
 }
 
 # Edit command
-sub EditCmd {
+sub edit_cmd {
   # Set a default editor value
   $ENV{EDITOR} ||= 'vim';
 
@@ -304,11 +304,11 @@ sub EditCmd {
   system "$ENV{EDITOR} $MAPFILE";
 }
 
-sub CheckCmd {
-  ExecLinkOp($_[0], \&CheckLinkOp);
+sub check_cmd {
+  exec_link_op($_[0], \&check_link_op);
 }
 
-sub ListCmd {
+sub list_cmd {
   puts "Mappings (from $MAPFILE), paths relative to $DOTFILES";
   puts "(format: source => name_of_symlink)\n";
 
@@ -323,21 +323,21 @@ sub ListCmd {
 }
 
 # Run a subcommand based on string
-sub RunSubcommand {
+sub run_subcommand {
   # Dispatch table
   my %subcommands = (
-    link => \&LinkCmd,
-    unlink => \&UnlinkCmd,
-    edit => \&EditCmd,
-    list => \&ListCmd,
-    check => \&CheckCmd
+    link => \&link_cmd,
+    unlink => \&unlink_cmd,
+    edit => \&edit_cmd,
+    list => \&list_cmd,
+    check => \&check_cmd
   );
 
   # If the command isn't in the table, exit and print usage
   $subcommands{$_[0]} or pod2usage(2);
 
   # Parse the file
-  my $mappings = ParseMapfile($MAPFILE);
+  my $mappings = parse_mapfile($MAPFILE);
   # Then execute the command on the extracted mappings
   $subcommands{$_[0]}->($mappings);
 }
@@ -347,7 +347,7 @@ scalar @ARGV > 0 or pod2usage(2);
 
 # Get the commandline options, only recognise help/manual, everything else gets sent to dispatch subroutine
 my ($help, $manual);
-my %optctl = (help => \$help, manual => \$manual, '<>' => \&RunSubcommand);
+my %optctl = (help => \$help, manual => \$manual, '<>' => \&run_subcommand);
 GetOptions(\%optctl, 'help|h', 'manual|man', '<>') or pod2usage(2);
 
 =head1 OPTIONS
