@@ -133,7 +133,7 @@
 .\" ========================================================================
 .\"
 .IX Title "CONF 1"
-.TH CONF 1 "2020-01-31" "perl v5.30.1" "User Contributed Perl Documentation"
+.TH CONF 1 "2020-02-11" "perl v5.30.1" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -170,8 +170,11 @@ This is a script to manage filesystem-wide symbolic links to your dotfiles (conf
 The location of the map file is set in the script itself, using the \f(CW$MAPFILE\fR variable.
 The default name of the mapfile is \*(L"dot.map\*(R", and it is located in the root of your dotfiles folder.
 The location of your dotfiles is set either using the \f(CW$DOTFILES\fR environment variable, or inside the script itself.
-.SH "ARGUMENTS"
-.IX Header "ARGUMENTS"
+.PP
+Every existing file will be backed up by appending the extension '.bak', before being overwritten.
+If a directory in the destination path doesn't exist, it is automatically created.
+`conf` doesn't remove empty directories after unlinking.
+When linking/unlinking you either provide the name of the top directory, or the full name of the mapped path (see examples below for more information).
 .IP "\(bu" 4
 \&\fBlink [entry1 [entry2...]]\fR
 .Sp

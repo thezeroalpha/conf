@@ -1,0 +1,99 @@
+# Mappings for your dotfiles
+#
+# The format of this file is:
+#   - comments:
+#     - lines starting with '#' are comments
+#     - a comment must be on its own line
+#     - there are no multi-line comments
+#   - whitespace:
+#     - whitespace is ignored, except inside a mapping definition
+#        (i.e. you can indent lines however you like, and insert blank lines)
+#   - mappings:
+#     - a mapping definition is: "source: destination"
+#     - source paths are relative to $DOTFILES (set in scripts/conf, or from an environment variable)
+#     - lines that don't start with a '-' (dash) are top-level directories or files inside $DOTFILES
+#     - lines starting with n number of '-' (dashes) are files/directories n levels deep
+#         (i.e. '- bin' is one level deep, '-- bin' is two levels deep, etc.)
+#     - every file/directory that is not at the root level must be under some top directory
+#         (i.e. you can't have a line starting with '-' as the first line of the mapfile)
+#     - every mapping source must exist (conf will complain if it doesn't)
+#
+# For example, the map definitions:
+#   vim:
+#     - vimrc: ~/.vimrc
+#     - autoload:
+#       -- script1.vim: ~/.vim/autoload/script1.vim
+#       -- script2.vim: ~/.vim/autoload/script2.vim
+#   tmux/tmux.conf: ~/.tmux.conf
+#   ghci: ~/.ghci
+#
+# Get parsed as:
+#   vim/vimrc => ~/.vimrc
+#   vim/autoload/script1.vim => ~/.vim/autoload/script1.vim
+#   vim/autoload/script2.vim => ~/.vim/autoload/script2.vim
+#   tmux/tmux.conf => ~/.tmux.conf
+#   ghci => ~/.ghci
+#
+# And executed as the commands:
+#   ln -svf "$DOTFILES/vim/vimrc" "~/.vimrc"
+#   ln -svf "$DOTFILES/vim/autoload/script1.vim" "~/.vim/autoload/script1.vim"
+#   ln -svf "$DOTFILES/vim/autoload/script2.vim" "~/.vim/autoload/script2.vim"
+#   ln -svf "$DOTFILES/tmux/tmux.conf" "~/.tmux.conf"
+#   ln -svf "$DOTFILES/ghci" "~/.ghci"
+#
+# Every existing file will be backed up by appending the extension '.bak', before being overwritten.
+# If a directory in the destination path doesn't exist, it is automatically created.
+# `conf` doesn't remove empty directories after unlinking.
+#
+# The arrows "x => y" mean:
+#   - "source => name_of_symlink"
+#   - "the symbolic link to x is y"
+#   - "y points to x"
+#
+# When linking/unlinking you either provide the name of the top directory,
+#  or the full name of the mapped path.
+
+# Custom scripts
+bin: ~/.bin
+scripts: ~/.scripts
+
+# Utilities
+ctags.d: ~/.ctags.d
+git:
+- gitconfig: ~/.gitconfig
+tmux:
+- tmux.conf: ~/.tmux.conf
+mpv: ~/.config/mpv
+joplin/keymap.json: ~/.config/joplin/keymap.json
+
+# X server
+Xresources: ~/.Xresources
+
+# Emacs config
+emacs:
+- emacs.d/themes: ~/.emacs.d/themes
+- emacs: ~/.emacs
+
+# All shell configs
+shell:
+- aliases: ~/.aliases
+- functions: ~/.functions
+- zprofile: ~/.zprofile
+- zshrc: ~/.zshrc
+- bash_profile: ~/.bash_profile
+- bashrc: ~/.bashrc
+- profile: ~/.profile
+- inputrc: ~/.inputrc
+
+# Vim config
+vim:
+- after: ~/.vim/after
+- autoload: ~/.vim/autoload
+- colors: ~/.vim/colors
+- compiler: ~/.vim/compiler
+- ftdetect: ~/.vim/ftdetect
+- plugin: ~/.vim/plugin
+- syntax: ~/.vim/syntax
+- ultisnips: ~/.vim/ultisnips
+- vimrc: ~/.vimrc
+
