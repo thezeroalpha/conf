@@ -379,10 +379,15 @@ This is a script to manage filesystem-wide symbolic links to your dotfiles (conf
 The location of the map file is set in the script itself, using the $MAPFILE variable.
 The default name of the mapfile is "dot.map", and it is located in the root of your dotfiles folder.
 The location of your dotfiles is set either using the $DOTFILES environment variable, or inside the script itself.
+
 Every existing file will be backed up by appending the extension '.bak', before being overwritten.
 If a directory in the destination path doesn't exist, it is automatically created.
 `conf` doesn't remove empty directories after unlinking.
 When linking/unlinking you either provide the name of the top directory, or the full name of the mapped path (see examples below for more information).
+
+=head1 ARGUMENTS
+
+The available commands are:
 
 =over 4
 
@@ -408,7 +413,6 @@ Edit the map file with whatever you set as $EDITOR
 =item * B<list>
 
 List the current mappings.
-
 
 =back
 
