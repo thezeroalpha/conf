@@ -1,17 +1,17 @@
 # conf - a personal configuration manager
 ## Installation
 1. Perl is required, but should be installed by default on most UNIX systems.
-2. Depending on the OS:
-    * Mac: you can `brew install thezeroalpha/formulae/conf`
-    * Linux: `make install`. Alternatively, download the `conf` script, make it executable, and put it in your `$PATH`.  On Mac, you can `brew install thezeroalpha/formulae/conf`.
+2. On Mac, you can `brew install thezeroalpha/formulae/conf`.
+    Alternatively, or on Linux, you can `make install`.
+    The third option is to download the `conf` script, make it executable, and put it in your `$PATH`.
 3. Set the value of the `DOTFILES` variable to the location of your dotfiles, either in the environment (recommended), or in the `conf` script itself.
 4. Set up your dotfiles hierarchy in any way you want, see the FAQ below for an example.
 5. Create a map file; this file defines how your dotfiles/folders map to other locations in your filesystem.
   You have three options, in ascending order of customization:
-  * Run `conf edit` to open the default file at the default location (named `dot.map` at the root of the directory in the `DOTFILES` variable).
-  * Or manually put a map file in the root of the directory defined in the `DOTFILES` variable.
+    * Run `conf edit` to open the default file at the default location (named `dot.map` at the root of the directory in the `DOTFILES` variable).
+    * Or manually put a map file in the root of the directory defined in the `DOTFILES` variable.
     By default, the file is named "dot.map", but this can be changed by manually editing the definition of `$MAPFILE` in the `conf` script.
-  * Or put the file wherever you want on your filesystem, and change the definition of `$MAPFILE` in the `conf` script accordingly.
+    * Or put the file wherever you want on your filesystem, and change the definition of `$MAPFILE` in the `conf` script accordingly.
 6. Use `conf`, and profit, maybe. Run `conf -h` or `conf -man` to get help.
 
 ## FAQ
