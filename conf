@@ -112,14 +112,7 @@ sub ParseMapfile {
 
         # Otherwise, it's a one-off mapping (doesn't have related nested mappings below)
         else {
-          # If the source doesn't exist, can't map
-          if (not -e $src) {
-            Die("error in mapfile: $src does not exist (line $lineno)");
-          }
-          # If it does, add it as a mapping
-          else {
-            $mappings{"$src"} = $dst;
-          }
+          $mappings{"$src"} = $dst;
         }
       }
 
@@ -144,13 +137,7 @@ sub ParseMapfile {
         else {
           my $fullsrc = join("/", @nestdir)."/$src";
           # If it doesn't exist, can't map
-          if (not -e $fullsrc) {
-            Die("error in mapfile: $fullsrc does not exist (line $lineno)");
-          }
-          # Otherwise, add the mapping
-          else {
-            $mappings{"$fullsrc"} = $dst;
-          }
+          $mappings{"$fullsrc"} = $dst;
         }
       }
     }
@@ -172,6 +159,10 @@ sub PrettyPrint {
 # Link to a source path at a destination path
 sub MakeLinkOp {
   my ($src, $dst) = @_;
+
+  if (not -e $src) {
+    Die("error in mapfile: $src does not exist");
+  }
 
   # If the destination exists
   if (-e $dst) {
@@ -202,6 +193,10 @@ sub MakeLinkOp {
 sub RmLinkOp {
   my ($src, $dst) = @_;
 
+  if (not -e $src) {
+    Die("error in mapfile: $src does not exist");
+  }
+
   # If the destination doesn't exist, nothing to do here.
   if (! -e "$dst") {
     puts "$dst does not exist.";
@@ -224,6 +219,10 @@ sub RmLinkOp {
 # Check whether a link points to the config file
 sub CheckLinkOp {
   my ($src, $dst) = @_;
+  if (not -e $src) {
+    Die("error in mapfile: $src does not exist");
+  }
+
   if (-e $dst) {
     if (-l $_[1] and realpath($_[1]) eq $DOTFILES."/".$_[0]) {
       puts "[ OK ] $src is linked at $dst.";
